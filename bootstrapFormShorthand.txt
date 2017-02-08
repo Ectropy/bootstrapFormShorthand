@@ -1,0 +1,50 @@
+start = elements
+
+elements = element _element*
+
+//The first element to appear
+element = name argument*
+
+//Any other elements after the first one. These will be preceded by at least one new line.
+_element = _* _e:element {return _e}
+
+//Accept any valid html name for this element
+name "element name"= first:[a-zA-Z_$] rest:[a-zA-Z0-9_$\-]* { return first + rest.join("") }
+
+//Define what an argument looks like in this DSL
+argument "argument" = bar p:parameter { return p}
+
+//Accept any valid parameter
+parameter "parameter" = p:[a-zA-Z0-9 ]* {return p.join("")}
+
+
+bar "bar" = [|\t]
+_ "new line" = [\n\r]
+
+
+//--------------------------------------------------------------------------------------------------------------
+start = elements
+
+//This grammar consists of any number of elements.
+elements = element*
+
+//Each element has a name, then a number of arguments.
+element =  _* e:(name argument*) {return e}
+	/ _* e:("checkboxes" spanarg* "checkboxes") {return e}
+    / _* e:("radios" spanarg* "radios") {return e}
+    / _* e:("selects" spanarg* "selects") {return e}
+
+//Accept any valid html name for this element
+name "element name"= first:[a-zA-Z_$] rest:[a-zA-Z0-9_$\-]* { return first + rest.join("") }
+
+//Define what an argument looks like in this DSL
+argument "argument" = bar p:parameter { return p}
+
+//define what a spanarg looks like in this DSL
+spanarg "span argument" = _+ p:parameter argument* _+ {return "spanarg" + p}
+
+//Accept any valid parameter
+parameter "parameter" = p:[a-zA-Z0-9 ]* {return p.join("")}
+
+bar "bar" = [|\t]
+_ "new line" = [\n\r]
