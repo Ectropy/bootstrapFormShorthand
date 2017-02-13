@@ -1,0 +1,208 @@
+(function(window){
+    'use strict;'
+
+    $("#shorthand").on("input propertychange click", function() {
+
+        //split on new lines
+        var elements = $("#shorthand").val().split("\n")
+
+        //ignore any empty lines, because these are ignored in our shorthand
+        while (elements.indexOf("") != -1) {
+            var index = elements.indexOf("")
+            elements.splice(index, 1);
+        }
+
+        for (i = 0; i < elements.length; i++) {
+
+            //determine last char in the element
+            var lastchar = elements[i].substr(elements[i].length - 1)
+
+            //if the last char is a <, then this is a span element opener
+            if (lastchar == "<"){
+                //remove the <
+                elements[i] = "open " + elements[i].substr(0, elements[i].length - 1)
+                //split on bars (some span elements have arguments)
+                elements[i] = elements[i].split("|");
+
+            }
+            //if the last chat is a >, then this is a span element close
+            else if (lastchar == ">"){
+                elements[i] = "close";
+            }
+            //otherwise it's a normal element
+            else{
+                //split on bars
+                elements[i] = elements[i].split("|");
+            }
+        }
+
+        //At this point, the shortcode has been completely parsed.
+        //Now to convert it to HTML and ajax.
+
+        //mode can be "regular" or "span".
+        var mode = "regular";
+
+        //populate html and ajax with their starting contents
+        var html = ''
+        html +='<form class="form-horizontal">\n';
+
+        var ajax = '';
+        ajax +='//This is an Immediately Invoked Function Expression (IIFE) that wraps all of\n'
+        ajax +='//the code and accepts the window object as an argument.\n'
+        ajax +='(function(window){\n'
+        ajax +='\'use strict\'\n';
+        ajax +='\n';
+        ajax +='//Handles detection of submit button click.\n'
+        ajax +='$("#btnSubmit").on("click", function(){\n'
+        ajax +='    var errors = ""\n\n'
+
+        ajaxreader = ''
+        ajaxvalidation = ''
+        ajaxdata = ''
+        ajaxcleaner = ''
+
+        var Label = ''
+        var id = ''
+        var placeholder = ''
+
+        for (var i = 0; i < elements.length; i++) {
+            var label = ''
+            var id = ''
+            var placeholder = ''
+
+            for (var j = 0; j < elements[i].length; j++) {
+                if (mode === "regular"){
+
+                    switch(elements[i][j]) {
+                        case "input-text":
+                        label = elements[i][1];
+                        id = elements[i][2];
+                        placeholder = elements[i][3]
+
+                        html +='    <div class="form-group">\n';
+                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                        html +='        <div class="col-sm-9">\n';
+                        html +='            <input class="form-control" id="'+id+'" placeholder="'+placeholder+'" type="text">\n';
+                        html +='        </div>\n';
+                        html +='    </div>\n';
+
+                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+
+                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+                        ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+
+                        ajaxdata +=        '                '+id+' : '+id+',\n'
+
+                        ajaxcleaner +=     '    $("#'+id+'").val("");\n'
+
+                        break;
+                    }
+
+                }
+                else if (mode === "span") {
+
+                }
+                console.log(elements[i][j]);
+            }
+            //elements[i]
+        }
+
+        //console.log(elements);
+
+        html +='    <div class="col-sm-12 text-center">\n'
+        html +='        <button class="btn btn-lg btn-primary" id="btnSubmit">Submit</button>\n'
+        html +='    </div>\n'
+        html +='</form>\n'
+
+        var ajaxfinal = "";
+        ajaxfinal += ajax
+        ajaxfinal +=   '    //Load values from form fields.\n'
+        ajaxfinal += ajaxreader
+        ajaxfinal +=   '    //Clientside validation. Check for null on selects, check for empty string on text inputs\n'
+        ajaxfinal += ajaxvalidation
+        ajaxfinal +=   '    //If there are no clientside errors, proceed with submission.\n'
+        ajaxfinal +=   '    if (errors === ""){\n\n'
+        ajaxfinal +=   '    $.ajax({\n'
+        ajaxfinal +=   '    type: "POST",\n'
+        ajaxfinal +=   '    url: "server/index.cfc",\n'
+        ajaxfinal +=   '    data: {	method : "submitRsvp",\n'
+        ajaxfinal += ajaxdata.substr(0, ajaxdata.length - 2) //remove the last comma from the ajax data (and incidentally also the newline char)
+        ajaxfinal +=   '\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    })\n'
+        ajaxfinal +=   '    .done(	//the "done" promise occurs when the ajax request succeeded.\n'
+        ajaxfinal +=   '    function(response) {\n'
+        ajaxfinal +=   '    if (response == "success"){\n'
+        ajaxfinal +=   '    //Put all form fields back to empty state.\n'
+        ajaxfinal += ajaxcleaner
+        ajaxfinal +=   '    bootbox.dialog({\n'
+        ajaxfinal +=   '    closeButton: false,\n'
+        ajaxfinal +=   '    title: "Success",\n'
+        ajaxfinal +=   '    message: "The form has been submitted successfully!",\n'
+        ajaxfinal +=   '    buttons: {\n'
+        ajaxfinal +=   '    main:{\n'
+        ajaxfinal +=   '    label: "Ok",\n'
+        ajaxfinal +=   '    className: "btn-primary"\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    });\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    else {\n'
+        ajaxfinal +=   '    bootbox.dialog({\n'
+        ajaxfinal +=   '    closeButton: false,\n'
+        ajaxfinal +=   '    title: "Something went wrong.",\n'
+        ajaxfinal +=   '    message: "Oops! We found the following problems with the responses that you provided: <br>" + response,\n'
+        ajaxfinal +=   '    buttons: {\n'
+        ajaxfinal +=   '    main:{\n'
+        ajaxfinal +=   '    label: "Ok",\n'
+        ajaxfinal +=   '    className: "btn-primary"\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    });\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    )\n'
+        ajaxfinal +=   '    .fail( //the "fail" promise occurs when the ajax request failed.\n'
+        ajaxfinal +=   '    function() {\n'
+        ajaxfinal +=   '    bootbox.dialog({\n'
+        ajaxfinal +=   '    closeButton: false,\n'
+        ajaxfinal +=   '    title: "Something went wrong.",\n'
+        ajaxfinal +=   '    message: "We were unable to contact the server. Please try again later.",\n'
+        ajaxfinal +=   '    buttons: {\n'
+        ajaxfinal +=   '    main:{\n'
+        ajaxfinal +=   '    label: "Ok",\n'
+        ajaxfinal +=   '    className: "btn-primary"\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    });\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    );\n'
+        ajaxfinal +=   '    } //end errors if\n'
+        ajaxfinal +=   '    else{\n'
+        ajaxfinal +=   '    errors += "<br>Please check your input and try submitting this form again.";\n'
+        ajaxfinal +=   '    bootbox.dialog({\n'
+        ajaxfinal +=   '    closeButton: false,\n'
+        ajaxfinal +=   '    title: "Something went wrong.",\n'
+        ajaxfinal +=   '    message: "Oops! We found the following problems with the responses that you provided:<br><br>" + errors,\n'
+        ajaxfinal +=   '    buttons: {\n'
+        ajaxfinal +=   '    main:{\n'
+        ajaxfinal +=   '    label: "Ok",\n'
+        ajaxfinal +=   '    className: "btn-primary"\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '    });\n'
+        ajaxfinal +=   '    }\n'
+        ajaxfinal +=   '});\n'
+        ajaxfinal +=   '})(window); //Give the IIFE window object as an argument.'
+
+
+        $("#htmlresults").val(html);
+        $("#ajaxresults").val(ajaxfinal);
+
+    })
+
+})(window);
