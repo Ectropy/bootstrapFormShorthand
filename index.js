@@ -20,14 +20,15 @@
             //if the last char is a <, then this is a span element opener
             if (lastchar == "<"){
                 //remove the <
-                elements[i] = "open " + elements[i].substr(0, elements[i].length - 1)
+                elements[i] = "open>>> " + elements[i].substr(0, elements[i].length - 1)
                 //split on bars (some span elements have arguments)
                 elements[i] = elements[i].split("|");
 
             }
             //if the last chat is a >, then this is a span element close
             else if (lastchar == ">"){
-                elements[i] = "close";
+                //insert array of length 1
+                elements[i] = ["close>>>"];
             }
             //otherwise it's a normal element
             else{
@@ -44,7 +45,7 @@
 
         //populate html and ajax with their starting contents
         var html = ''
-        html +='<form class="form-horizontal">\n';
+        html +='<form class="form-horizontal">\n\n';
 
         var ajax = '';
         ajax +='//This is an Immediately Invoked Function Expression (IIFE) that wraps all of\n'
@@ -64,74 +65,170 @@
         var Label = ''
         var id = ''
         var placeholder = ''
+        var name = ''
+        var value = ''
+
+        console.log(elements);
 
         for (var i = 0; i < elements.length; i++) {
-            var label = ''
-            var id = ''
-            var placeholder = ''
+            label = ''
+            id = ''
+            placeholder = ''
+            name = ''
+            value = ''
 
-            for (var j = 0; j < elements[i].length; j++) {
-                console.log("i="+i+" j="+j)
+            if (elements[i][0].split(' ')[0] === "open>>>"){
+                console.log(elements[i][0].split(' ')[0]);
+                console.log("mode span triggered");
+                mode = "span";
+            }
+            else {
+                console.log("regular mode");
+                mode = "regular";
+            }
 
-                if (elements[i][j])
+            if (mode === "regular"){
 
-                if (mode === "regular"){
+                switch(elements[i][0]) {
+                    case "input-text":
+                    label = elements[i][1];
+                    id = elements[i][2];
+                    placeholder = elements[i][3]
 
-                    switch(elements[i][j]) {
-                        case "input-text":
+                    html +='    <div class="form-group">\n';
+                    html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                    html +='        <div class="col-sm-9">\n';
+                    html +='            <input class="form-control" id="'+id+'" placeholder="'+placeholder+'" type="text">\n';
+                    html +='        </div>\n';
+                    html +='    </div>\n\n';
+
+                    ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+
+                    ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                    ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                    ajaxvalidation +=  '    }\n'
+                    ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
+                    ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
+                    ajaxvalidation +=  '    }\n'
+
+                    ajaxdata +=        '                '+id+' : '+id+',\n'
+
+                    ajaxcleaner +=     '    $("#'+id+'").val("");\n'
+
+                    break;
+                }
+
+            }
+            else if (mode === "span") {
+                switch (elements[i][0]) {
+
+                    //========================= RADIOS =========================
+                    case "open>>> radios":
+                        //read args for radio group's label & name.
+                        label = elements[i][1];
+                        name = elements[i][2];
+                        console.log('Building radio group with name "'+name+'"...');
+
+
+                        html +='    <div class="form-group">\n'
+                        html +='        <label for="'+name+'" class="col-sm-3 control-label">'+label+'</label>\n'
+                        html +='        <div class="col-sm-9">\n'
+
+                        i++;
+                        while (elements[i][0] !== "close>>>"){
+                            label = elements[i][0]
+                            id = elements[i][1]
+                            value = elements[i][2]
+
+                            html +='            <div class="radio">\n'
+                            html +='                <label>\n'
+                            html +='                    <input type="radio" name="'+name+'" id="'+id+'" value="'+value+'">\n'
+                            html +='                    '+label+'\n'
+                            html +='                </label>\n'
+                            html +='            </div>\n'
+
+                            i++;
+                        }
+
+                        html +='        </div>\n' //.col-sm-
+                        html +='    </div>\n\n' //form-group
+                        break;
+
+                    //========================= CHECKBOXES =========================
+                    case "open>>> checkboxes":
+                        //read args for checkbox group's label & name.
+                        label = elements[i][1];
+                        name = elements[i][2];
+                        console.log('Building checkbox group with name "'+name+'"...');
+
+
+                        html +='    <div class="form-group">\n'
+                        html +='        <label for="'+name+'" class="col-sm-3 control-label">'+label+'</label>\n'
+                        html +='        <div class="col-sm-9">\n'
+
+                        i++;
+                        while (elements[i][0] !== "close>>>"){
+                            label = elements[i][0]
+                            id = elements[i][1]
+                            value = elements[i][2]
+
+                            html +='            <div class="checkbox">\n'
+                            html +='                <label>\n'
+                            html +='                    <input type="checkbox" name="'+name+'" id="'+id+'" value="'+value+'">\n'
+                            html +='                    '+label+'\n'
+                            html +='                </label>\n'
+                            html +='            </div>\n'
+
+                            i++;
+                        }
+
+                        html +='        </div>\n' //.col-sm-
+                        html +='    </div>\n\n' //form-group
+                        break;
+
+                    //========================= SELECT =========================
+                    case "open>>> select":
+                        //read args for select's label and id
                         label = elements[i][1];
                         id = elements[i][2];
-                        placeholder = elements[i][3]
+                        console.log('Building select...');
 
-                        html +='    <div class="form-group">\n';
-                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
-                        html +='        <div class="col-sm-9">\n';
-                        html +='            <input class="form-control" id="'+id+'" placeholder="'+placeholder+'" type="text">\n';
-                        html +='        </div>\n';
-                        html +='    </div>\n';
 
-                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+                        html +='    <div class="form-group">\n'
+                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n'
+                        html +='        <div class="col-sm-9">\n'
+                        html +='            <select class="form-control" id="'+id+'">\n'
+                        html +='            <option value="" disabled selected style="display:none;">Select an option</option>\n'
 
-                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
-                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
-                        ajaxvalidation +=  '    }\n'
-                        ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
-                        ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
-                        ajaxvalidation +=  '    }\n'
+                        i++;
 
-                        ajaxdata +=        '                '+id+' : '+id+',\n'
+                        while (elements[i][0] !== "close>>>"){
+                            label = elements[i][0]
+                            value = elements[i][1]
 
-                        ajaxcleaner +=     '    $("#'+id+'").val("");\n'
+                            html +='            <option value="'+value+'">'+label+'</option>\n'
+                            i++;
 
+                        }
+
+                        html +='            </select>\n' //select
+                        html +='        </div>\n' //.col-sm-
+                        html +='    </div>\n\n' //form-group
                         break;
-                    }
-
+                    default:
                 }
-                else if (mode === "span") {
-
-                    switch (elements[i][j]) {
-                        case "open radio":
-
-
-                            break;
-                        default:
-
-                    }
-
-                }
-                console.log(elements[i][j]);
             }
             //elements[i]
         }
 
-        //console.log(elements);
+        console.log(elements);
 
 
         //The boilderplate end of the html.
-        html +='    <div class="col-sm-12 text-center">\n'
-        html +='        <button class="btn btn-lg btn-primary" id="btnSubmit">Submit</button>\n'
-        html +='    </div>\n'
-        html +='</form>\n'
+        html +='</form>\n\n'
+        html +='<div class="col-sm-12 text-center">\n'
+        html +='    <button class="btn btn-lg btn-primary" id="btnSubmit">Submit</button>\n'
+        html +='</div>\n'
 
         //Combine dynamically generated ajax with boilerplate ajax.
         var ajaxfinal = "";
@@ -219,6 +316,8 @@
         //Display the transpiled code
         $("#htmlresults").val(html);
         $("#ajaxresults").val(ajaxfinal);
+
+        $("#formpreview").html(html);
 
     })
 

@@ -1,27 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Bootstrap Form DSL</title>
-  </head>
-  <body>
-    <textarea id="shorthand" class="form-control" rows="20" cols="150">
-input-text|Address Line 1|address1|Address Line 1
+    <head>
+        <meta charset="utf-8">
+        <title>Bootstrap Form DSL</title>
 
-
-
-radio|test|test2|test3<
-
-label|id
-label|id
+        <link rel="stylesheet" href="static/vendors/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <textarea id="shorthand" class="form-control" rows="10" cols="150">
+select|Label|id<
+label|value
+label|value
+label|value
 >
-    </textarea>
-    <br>
-    <textarea id="htmlresults" class="form-control" rows="20" cols="150"></textarea>
-    <br>
-    <textarea id="ajaxresults" class="form-control" rows="20" cols="150"></textarea>
 
-    <script src="jquery-3.1.1.min.js"></script>
-    <script src="index.js"></script>
-  </body>
+checkboxes|Label|name<
+labelOne|idOne|valueone
+labelTwo|idtwo|valuetwo
+>
+
+input-text|Address Line 1|address1|Address Line 1
+input-text|Address Line 2|address2|Address Line 2
+
+
+radios|LABEL|NAME<
+
+labelOne|idone|valueone
+labelTwo|idTwo|valuetwo
+>
+        </textarea>
+        <br>
+        <textarea id="htmlresults" class="form-control" rows="5" cols="150"></textarea>
+        <br>
+        <textarea id="ajaxresults" class="form-control" rows="5" cols="150"></textarea>
+        <br>
+        <div id="formpreview"></div>
+
+        <!-- Core js -->
+        <script src="jquery-3.1.1.min.js"></script>
+        <script src="static/vendors/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+        <!-- Page-specific js -->
+        <script src="index.js"></script>
+    </body>
 </html>
