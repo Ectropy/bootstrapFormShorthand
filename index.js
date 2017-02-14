@@ -71,6 +71,10 @@
             var placeholder = ''
 
             for (var j = 0; j < elements[i].length; j++) {
+                console.log("i="+i+" j="+j)
+
+                if (elements[i][j])
+
                 if (mode === "regular"){
 
                     switch(elements[i][j]) {
@@ -105,6 +109,15 @@
                 }
                 else if (mode === "span") {
 
+                    switch (elements[i][j]) {
+                        case "open radio":
+
+
+                            break;
+                        default:
+
+                    }
+
                 }
                 console.log(elements[i][j]);
             }
@@ -113,11 +126,14 @@
 
         //console.log(elements);
 
+
+        //The boilderplate end of the html.
         html +='    <div class="col-sm-12 text-center">\n'
         html +='        <button class="btn btn-lg btn-primary" id="btnSubmit">Submit</button>\n'
         html +='    </div>\n'
         html +='</form>\n'
 
+        //Combine dynamically generated ajax with boilerplate ajax.
         var ajaxfinal = "";
         ajaxfinal += ajax
         ajaxfinal +=   '    //Load values from form fields.\n'
@@ -200,6 +216,7 @@
         ajaxfinal +=   '})(window); //Give the IIFE window object as an argument.'
 
 
+        //Display the transpiled code
         $("#htmlresults").val(html);
         $("#ajaxresults").val(ajaxfinal);
 
