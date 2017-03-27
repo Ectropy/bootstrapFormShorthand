@@ -7,7 +7,11 @@
         <link rel="stylesheet" href="static/vendors/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     </head>
     <body>
-        <textarea id="shorthand" class="form-control" rows="10" cols="150">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Enter your shorthand code</p>
+                    <textarea id="shorthand" class="form-control" rows="10" cols="150">
 select|Label|id<
 label|value
 label|value
@@ -28,13 +32,30 @@ radios|LABEL|NAME<
 labelOne|idone|valueone
 labelTwo|idTwo|valuetwo
 >
-        </textarea>
-        <br>
-        <textarea id="htmlresults" class="form-control" rows="5" cols="150"></textarea>
-        <br>
-        <textarea id="ajaxresults" class="form-control" rows="5" cols="150"></textarea>
-        <br>
-        <div id="formpreview"></div>
+                    </textarea>
+                    <br>
+                </div> <!-- .col -->
+            </div> <!-- .row -->
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p>Transpiled HTML</p>
+                    <textarea id="htmlresults" class="form-control" rows="5" cols="150"></textarea>
+                </div> <!-- .col -->
+                <div class="col-md-6">
+                    <p>Transpiled Javacript</p>
+                    <textarea id="ajaxresults" class="form-control" rows="5" cols="150"></textarea>
+                </div> <!-- .col -->
+            </div> <!-- .row -->
+
+            <div class="row">
+                <div class="col-md-12">
+                    <br>
+                    <p>Form Preview</p>
+                    <div id="formpreview"></div>
+                </div> <!-- .col -->
+            </div> <!-- .row -->
+        </div>
 
         <!-- Core js -->
         <script src="static/vendors/jquery/jquery-3.1.1.min.js"></script>
