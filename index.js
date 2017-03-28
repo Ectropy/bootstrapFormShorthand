@@ -3,6 +3,8 @@
 
     $("#shorthand").on("input propertychange click", function() {
 
+        //================== PARSING INPUT ==================
+
         //split on new lines
         var elements = $("#shorthand").val().split("\n")
 
@@ -37,6 +39,8 @@
             }
         }
 
+        //================== /PARSING INPUT ==================
+
         //At this point, the shortcode has been completely parsed.
         //Now to convert it to HTML and ajax.
 
@@ -62,7 +66,8 @@
         ajaxdata = ''
         ajaxcleaner = ''
 
-        var Label = ''
+        var label = ''
+        var elemlabel = ''
         var id = ''
         var placeholder = ''
         var name = ''
@@ -72,18 +77,19 @@
 
         for (var i = 0; i < elements.length; i++) {
             label = ''
+            elemlabel = ''
             id = ''
             placeholder = ''
             name = ''
             value = ''
 
             if (elements[i][0].split(' ')[0] === "open>>>"){
-                console.log(elements[i][0].split(' ')[0]);
-                console.log("mode span triggered");
+                //console.log(elements[i][0].split(' ')[0]);
+                console.log("span mode triggered");
                 mode = "span";
             }
             else {
-                console.log("regular mode");
+                console.log("regular mode triggered");
                 mode = "regular";
             }
 
@@ -91,31 +97,58 @@
 
                 switch(elements[i][0]) {
                     case "input-text":
-                    label = elements[i][1];
-                    id = elements[i][2];
-                    placeholder = elements[i][3]
+                        label = elements[i][1];
+                        id = elements[i][2];
+                        placeholder = elements[i][3]
+                        console.log('Building input-text with label "'+label+'"...');
 
-                    html +='    <div class="form-group">\n';
-                    html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
-                    html +='        <div class="col-sm-9">\n';
-                    html +='            <input class="form-control" id="'+id+'" placeholder="'+placeholder+'" type="text">\n';
-                    html +='        </div>\n';
-                    html +='    </div>\n\n';
+                        html +='    <div class="form-group">\n';
+                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                        html +='        <div class="col-sm-9">\n';
+                        html +='            <input class="form-control" id="'+id+'" placeholder="'+placeholder+'" type="text">\n';
+                        html +='        </div>\n';
+                        html +='    </div>\n\n';
 
-                    ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
 
-                    ajaxvalidation +=  '    if ('+id+' === ""){\n'
-                    ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
-                    ajaxvalidation +=  '    }\n'
-                    ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
-                    ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
-                    ajaxvalidation +=  '    }\n'
+                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+                        ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
 
-                    ajaxdata +=        '            '+id+' : '+id+',\n'
+                        ajaxdata +=        '            '+id+' : '+id+',\n'
 
-                    ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+                        ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+                        break;
 
-                    break;
+                    case "textarea":
+                        label = elements[i][1];
+                        id = elements[i][2];
+                        placeholder = elements[i][3]
+                        numOfRows = elements[i][4]
+
+                        html +='    <div class="form-group">\n';
+                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                        html +='        <div class="col-sm-9">\n';
+                        html +='            <textarea class="form-control" id="'+id+'" placeholder="'+placeholder+'" rows="'+numOfRows+'"></textarea>\n';
+                        html +='        </div>\n';
+                        html +='    </div>\n\n';
+
+                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+
+                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+                        ajaxvalidation +=  '    if ('+id+'.length > 200){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is too long.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+
+                        ajaxdata +=        '            '+id+' : '+id+',\n'
+
+                        ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+                        break;
                 }
 
             }
@@ -136,14 +169,14 @@
 
                         i++;
                         while (elements[i][0] !== "close>>>"){
-                            label = elements[i][0]
+                            elemlabel = elements[i][0]
                             id = elements[i][1]
                             value = elements[i][2]
 
                             html +='            <div class="radio">\n'
                             html +='                <label>\n'
                             html +='                    <input type="radio" name="'+name+'" id="'+id+'" value="'+value+'">\n'
-                            html +='                    '+label+'\n'
+                            html +='                    '+elemlabel+'\n'
                             html +='                </label>\n'
                             html +='            </div>\n'
 
@@ -152,6 +185,18 @@
 
                         html +='        </div>\n' //.col-sm-
                         html +='    </div>\n\n' //form-group
+
+
+                        ajaxreader +=      '    var '+name+' = $("input[type=\'radio\'][name=\''+name+'\']:checked").val();\n'
+
+                        ajaxvalidation +=  '    if ('+name+' === null){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+
+                        ajaxdata +=        '            '+name+' : '+name+',\n'
+
+                        ajaxcleaner +=     '                $("input[type=\'radio\'][name=\''+name+'\']").prop("checked",false);\n'
+
                         break;
 
                     //========================= CHECKBOXES =========================
@@ -168,22 +213,31 @@
 
                         i++;
                         while (elements[i][0] !== "close>>>"){
-                            label = elements[i][0]
+                            elemlabel = elements[i][0]
                             id = elements[i][1]
                             value = elements[i][2]
 
                             html +='            <div class="checkbox">\n'
                             html +='                <label>\n'
                             html +='                    <input type="checkbox" name="'+name+'" id="'+id+'" value="'+value+'">\n'
-                            html +='                    '+label+'\n'
+                            html +='                    '+elemlabel+'\n'
                             html +='                </label>\n'
                             html +='            </div>\n'
+
+                            //each checkbox is considered an independent item, so the state of each should be read individually.
+                            ajaxreader +=      '    var '+id+' = $("#'+id+'").is(\':checked\');\n'
+                            //and sent to the server individually
+                            ajaxdata +=        '            '+id+' : '+id+',\n'
+                            //and cleaned up individually
+                            ajaxcleaner +=     '                $("#'+id+'").prop("checked",false);\n'
+                            //(no clientside validation is used, since checkboxes can only be true or false)
 
                             i++;
                         }
 
                         html +='        </div>\n' //.col-sm-
                         html +='    </div>\n\n' //form-group
+
                         break;
 
                     //========================= SELECT =========================
@@ -214,11 +268,20 @@
                         html +='            </select>\n' //select
                         html +='        </div>\n' //.col-sm-
                         html +='    </div>\n\n' //form-group
+
+                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+
+                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+
+                        ajaxdata +=        '            '+id+' : '+id+',\n'
+
+                        ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+
                         break;
-                    default:
                 }
             }
-            //elements[i]
         }
 
         console.log(elements);
@@ -234,9 +297,9 @@
         var ajaxfinal = "";
         ajaxfinal += ajax
         ajaxfinal +=   '    //Load values from form fields.\n'
-        ajaxfinal += ajaxreader
+        ajaxfinal += ajaxreader + '\n'
         ajaxfinal +=   '    //Clientside validation. Check for null on selects, check for empty string on text inputs\n'
-        ajaxfinal += ajaxvalidation
+        ajaxfinal += ajaxvalidation + '\n'
         ajaxfinal +=   '    //If there are no clientside errors, proceed with submission.\n'
         ajaxfinal +=   '    if (errors === ""){\n\n'
         ajaxfinal +=   '    $.ajax({\n'
@@ -252,7 +315,7 @@
         ajaxfinal +=   '        function(response) {\n'
         ajaxfinal +=   '            if (response == "success"){\n'
         ajaxfinal +=   '                //Put all form fields back to empty state.\n'
-        ajaxfinal += ajaxcleaner
+        ajaxfinal += ajaxcleaner + '\n';
         ajaxfinal +=   '                bootbox.dialog({\n'
         ajaxfinal +=   '                    closeButton: false,\n'
         ajaxfinal +=   '                    title: "Success",\n'
@@ -317,7 +380,6 @@
         //Display the transpiled code
         $("#htmlresults").val(html);
         $("#ajaxresults").val(ajaxfinal);
-
         $("#formpreview").html(html);
 
     })
