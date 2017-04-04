@@ -51,20 +51,16 @@
         var html = ''
         html +='<form class="form-horizontal">\n\n';
 
-        var ajax = '';
-        ajax +='//This is an Immediately Invoked Function Expression (IIFE) that wraps all of\n'
-        ajax +='//the code and accepts the window object as an argument.\n'
-        ajax +='(function(window){\n'
-        ajax +='\'use strict\'\n';
-        ajax +='\n';
-        ajax +='//Handles detection of submit button click.\n'
-        ajax +='$("#btnSubmit").on("click", function(){\n'
-        ajax +='    var errors = ""\n\n'
+        var init = ''
+        var ajaxreader = ''
+        var ajaxvalidation = ''
+        var ajaxdata = ''
+        var ajaxcleaner = ''
 
-        ajaxreader = ''
-        ajaxvalidation = ''
-        ajaxdata = ''
-        ajaxcleaner = ''
+        //Does this form use a...
+        var datepicker = false;
+        var timepicker = false;
+        var touchspin = false;
 
         var label = ''
         var elemlabel = ''
@@ -96,6 +92,7 @@
             if (mode === "regular"){
 
                 switch(elements[i][0]) {
+                    //========================= INPUT-TEXT =========================
                     case "input-text":
                         label = elements[i][1];
                         id = elements[i][2];
@@ -123,6 +120,7 @@
                         ajaxcleaner +=     '                $("#'+id+'").val("");\n'
                         break;
 
+                    //========================= TEXTAREA =========================
                     case "textarea":
                         label = elements[i][1];
                         id = elements[i][2];
@@ -148,6 +146,35 @@
                         ajaxdata +=        '            '+id+' : '+id+',\n'
 
                         ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+                        break;
+
+                    //========================= TIMEPICKER =========================
+                    case "timepicker":
+                        label = elements[i][1];
+                        id = elements[i][2];
+                        console.log('Building timepicker with label "'+label+'"...');
+
+                        html +='    <div class="form-group">\n';
+                        html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                        html +='        <div class="col-sm-3">\n';
+                        html +='            <input class="form-control" id="'+id+'" type="text" placeholder="Select or type a time" autocomplete="off">\n';
+                        html +='        </div>\n';
+                        html +='    </div>\n\n';
+
+                        init +='    $("#'+id+'").timepicker({\'closeOnWindowScroll\':true,'
+                        init +='        \'timeFormat\':\'H:i\'});'
+
+                        ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
+
+                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                        ajaxvalidation +=  '    }\n'
+
+                        ajaxdata +=        '            '+id+' : '+id+',\n'
+
+                        ajaxcleaner +=     '                $("#'+id+'").val("");\n'
+
+                        timepicker = true;
                         break;
                 }
 
@@ -295,7 +322,16 @@
 
         //Combine dynamically generated ajax with boilerplate ajax.
         var ajaxfinal = "";
-        ajaxfinal += ajax
+        ajaxfinal +=   '//This is an Immediately Invoked Function Expression (IIFE) that wraps all of\n'
+        ajaxfinal +=   '//the code and accepts the window object as an argument.\n'
+        ajaxfinal +=   '(function(window){\n'
+        ajaxfinal +=   '    \'use strict\'\n';
+        ajaxfinal +=   '    \n';
+        ajaxfinal += init + '\n';
+        ajaxfinal +=   '    \n';
+        ajaxfinal +=   '    //Handles detection of submit button click.\n'
+        ajaxfinal +=   '    $("#btnSubmit").on("click", function(){\n'
+        ajaxfinal +=   '    var errors = ""\n\n'
         ajaxfinal +=   '    //Load values from form fields.\n'
         ajaxfinal += ajaxreader + '\n'
         ajaxfinal +=   '    //Clientside validation. Check for null on selects, check for empty string on text inputs\n'
@@ -376,11 +412,24 @@
         ajaxfinal +=   '});\n'
         ajaxfinal +=   '})(window); //Give the IIFE window object as an argument.'
 
+        var notes = '';
+        if (datepicker === true){
+            notes = 'This form contains a datepicker. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/uxsolutions/bootstrap-datepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+        }
+        if (timepicker === true){
+            notes = 'This form contains a timepicker. Be sure to include the required <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.css">CSS</a> and <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.min.js">JS</a>. Latest versions can be found <a href="https://github.com/jonthornton/jquery-timepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+        }
+        if (touchspin === true){
+            notes = 'This form contains a touchspin. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/istvan-ujjmeszaros/bootstrap-touchspin">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+        }
 
         //Display the transpiled code
         $("#htmlresults").val(html);
         $("#ajaxresults").val(ajaxfinal);
-        $("#formpreview").html(html);
+        $("#formpreview").html(notes + html);
+
+        //Write init to page
+        $("#init").html(init);
 
     })
 
