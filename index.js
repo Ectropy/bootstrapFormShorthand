@@ -161,8 +161,8 @@
                         html +='        </div>\n';
                         html +='    </div>\n\n';
 
-                        init +='    $("#'+id+'").timepicker({\'closeOnWindowScroll\':true,'
-                        init +='        \'timeFormat\':\'H:i\'});'
+                        init +='    $("#'+id+'").timepicker({\'closeOnWindowScroll\':true,\n'
+                        init +='        \'timeFormat\':\'H:i\'});\n'
 
                         ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
 
@@ -327,8 +327,8 @@
         ajaxfinal +=   '(function(window){\n'
         ajaxfinal +=   '    \'use strict\'\n';
         ajaxfinal +=   '    \n';
+        ajaxfinal +=   '    //Initialize form components\n'
         ajaxfinal += init + '\n';
-        ajaxfinal +=   '    \n';
         ajaxfinal +=   '    //Handles detection of submit button click.\n'
         ajaxfinal +=   '    $("#btnSubmit").on("click", function(){\n'
         ajaxfinal +=   '    var errors = ""\n\n'
