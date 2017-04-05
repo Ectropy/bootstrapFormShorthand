@@ -6,13 +6,20 @@
 
         <link rel="stylesheet" href="static/vendors/bootstrap-3.3.7-dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.css">
+        <link rel="stylesheet" href="static/vendors/bootstrap-datepicker-1.7.0/css/bootstrap-datepicker3.css">
 
     </head>
     <body>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <p>Enter your shorthand code</p>
+                </div>
+                <div class="col-md-6" id="localStorageButtons">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <textarea id="shorthand" class="form-control" rows="10" cols="150">
 select|Label|id<
 label|value
@@ -63,6 +70,7 @@ labelTwo|idTwo|valuetwo
         <script src="static/vendors/jquery/jquery-3.1.1.min.js"></script>
         <script src="static/vendors/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
         <script src="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.js"></script>
+        <script src="static/vendors/bootstrap-datepicker-1.7.0/js/bootstrap-datepicker.js"></script>
 
         <!-- Page-specific js -->
         <script src="index.js"></script>

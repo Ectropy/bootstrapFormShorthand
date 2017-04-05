@@ -1,6 +1,43 @@
 (function(window){
     'use strict;'
 
+    //================== LOCALSTORAGE ==================
+    if (typeof(Storage) !== "undefined") {
+        if (localStorage.getItem("shorthand") !== null){
+            console.log("localStorage has contents, loading into the shorthand text box.");
+            $("#shorthand").val(localStorage.getItem("shorthand"));
+        }
+        else{
+            console.log("Nothing was found in localStorage.")
+        }
+
+
+        var lshtml = ''
+        lshtml += '<button class="btn btn-default" id="btnlocalStorageSave"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save to localStorage</button>';
+
+        lshtml += '<button class="btn btn-default" id="btnlocalStorageClear"><span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span> Clear localStorage</button>';
+
+        $("#localStorageButtons").html(lshtml);
+
+
+        $("#btnlocalStorageSave").on("click", function(){
+            //Store the current contents of the shorthand text box in localStorage
+            console.log("Saving to localStorage.");
+            localStorage.setItem("shorthand", $("#shorthand").val());
+        });
+
+        $("#btnlocalStorageClear").on("click", function(){
+            //Clear the current contents of the "shorthand" item in localStorage
+            console.log("Clearing localStorage.");
+            localStorage.removeItem("shorthand");
+        });
+
+    } else {
+        // No localStorage support.
+    }
+
+    //================== /LOCALSTORAGE ==================
+
     $("#shorthand").on("input propertychange click", function() {
 
         //================== PARSING INPUT ==================
@@ -148,6 +185,41 @@
                         ajaxcleaner +=     '                $("#'+id+'").val("");\n'
                         break;
 
+                    //========================= DATEPICKER =========================
+                        case "datepicker":
+                            label = elements[i][1];
+                            id = elements[i][2];
+                            placeholder = elements[i][3];
+                            console.log('Building datepicker with label "'+label+'"...');
+
+                            html +='    <div class="form-group">\n';
+                            html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
+                            html +='        <div class="col-sm-3">\n';
+                            html +='            <input class="form-control" id="'+id+'" type="text" placeholder="'+placeholder+'">\n';
+                            html +='        </div>\n';
+                            html +='    </div>\n\n';
+
+                            init +='    $("#'+id+'").datepicker({autoclose:true,\n'
+                            init +='        format:"MM d, yyyy",\n'
+                            init +='        assumeNearbyYear: true,\n'
+                            init +='        startView:1,\n'
+                            init +='        maxViewMode:2,\n'
+                            init +='        clearBtn: true,\n'
+                            init +='        });\n'
+
+                            ajaxreader +=      '    var '+id+' = $("#'+id+'").datepicker(\'getDate\');\n'
+
+                            ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                            ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
+                            ajaxvalidation +=  '    }\n'
+
+                            ajaxdata +=        '            '+id+' : '+id+',\n'
+
+                            ajaxcleaner +=     '                $("#'+id+'").datepicker(\'clearDates\');\n'
+
+                            datepicker = true;
+                            break;
+
                     //========================= TIMEPICKER =========================
                     case "timepicker":
                         label = elements[i][1];
@@ -175,6 +247,11 @@
                         ajaxcleaner +=     '                $("#'+id+'").val("");\n'
 
                         timepicker = true;
+                        break;
+
+                    //========================= TOUCHSPIN =========================
+                    case "touchspin":
+
                         break;
                 }
 
@@ -414,13 +491,13 @@
 
         var notes = '';
         if (datepicker === true){
-            notes = 'This form contains a datepicker. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/uxsolutions/bootstrap-datepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+            notes += 'This form contains a datepicker. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/uxsolutions/bootstrap-datepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
         }
         if (timepicker === true){
-            notes = 'This form contains a timepicker. Be sure to include the required <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.css">CSS</a> and <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.min.js">JS</a>. Latest versions can be found <a href="https://github.com/jonthornton/jquery-timepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+            notes += 'This form contains a timepicker. Be sure to include the required <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.css">CSS</a> and <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.min.js">JS</a>. Latest versions can be found <a href="https://github.com/jonthornton/jquery-timepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
         }
         if (touchspin === true){
-            notes = 'This form contains a touchspin. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/istvan-ujjmeszaros/bootstrap-touchspin">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+            notes += 'This form contains a touchspin. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/istvan-ujjmeszaros/bootstrap-touchspin">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
         }
 
         //Display the transpiled code
