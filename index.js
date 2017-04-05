@@ -13,7 +13,7 @@
 
 
         var lshtml = ''
-        lshtml += '<button class="btn btn-default" id="btnlocalStorageSave"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save to localStorage</button>';
+        lshtml += '<button class="btn btn-default" id="btnlocalStorageSave"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save to localStorage</button> ';
 
         lshtml += '<button class="btn btn-default" id="btnlocalStorageClear"><span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span> Clear localStorage</button>';
 
