@@ -39,7 +39,11 @@ label|value
 ```
 #### datepicker
 ```
-SYNTAX NOT YET FINALIZED
+datepicker|label|id|placholder
+```
+#### timepicker
+```
+timepicker|label|id|placeholder
 ```
 #### daterange
 ```

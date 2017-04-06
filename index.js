@@ -224,12 +224,13 @@
                     case "timepicker":
                         label = elements[i][1];
                         id = elements[i][2];
+                        placeholder = elements[i][3];
                         console.log('Building timepicker with label "'+label+'"...');
 
                         html +='    <div class="form-group">\n';
                         html +='        <label for="'+id+'" class="col-sm-3 control-label">'+label+'</label>\n';
                         html +='        <div class="col-sm-3">\n';
-                        html +='            <input class="form-control" id="'+id+'" type="text" placeholder="Select or type a time" autocomplete="off">\n';
+                        html +='            <input class="form-control" id="'+id+'" type="text" placeholder="'+placeholder+'" autocomplete="off">\n';
                         html +='        </div>\n';
                         html +='    </div>\n\n';
 
