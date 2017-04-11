@@ -492,7 +492,7 @@
 
         var notes = '';
         if (datepicker === true){
-            notes += 'This form contains a datepicker. Be sure to include the required CSS and JS. Latest versions can be found <a href="https://github.com/uxsolutions/bootstrap-datepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
+            notes += 'This form contains a datepicker. Be sure to include the required <a href="static/vendors/bootstrap-datepicker-1.7.0/css/bootstrap-datepicker3.min.css">CSS</a> and <a href="static/vendors/bootstrap-datepicker-1.7.0/js/bootstrap-datepicker.min.js">JS</a>. Latest versions can be found <a href="https://github.com/uxsolutions/bootstrap-datepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
         }
         if (timepicker === true){
             notes += 'This form contains a timepicker. Be sure to include the required <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.css">CSS</a> and <a href="static/vendors/jquery-timepicker-1.11.10/jquery.timepicker.min.js">JS</a>. Latest versions can be found <a href="https://github.com/jonthornton/jquery-timepicker">here</a>, but are not guaranteed to be compatible with the transpiled code.<br>'
