@@ -362,10 +362,10 @@
                         i++;
 
                         while (elements[i][0] !== "close>>>"){
-                            label = elements[i][0]
+                            elemlabel = elements[i][0]
                             value = elements[i][1]
 
-                            html +='            <option value="'+value+'">'+label+'</option>\n'
+                            html +='            <option value="'+value+'">'+elemlabel+'</option>\n'
                             i++;
 
                         }
@@ -409,7 +409,7 @@
         ajaxfinal += init + '\n';
         ajaxfinal +=   '    //Handles detection of submit button click.\n'
         ajaxfinal +=   '    $("#btnSubmit").on("click", function(){\n'
-        ajaxfinal +=   '    var errors = ""\n\n'
+        ajaxfinal +=   '    var errors = "";\n\n'
         ajaxfinal +=   '    //Load values from form fields.\n'
         ajaxfinal += ajaxreader + '\n'
         ajaxfinal +=   '    //Clientside validation. Check for null on selects, check for empty string on text inputs\n'
