@@ -209,7 +209,7 @@
 
                             ajaxreader +=      '    var '+id+' = $("#'+id+'").datepicker(\'getDate\');\n'
 
-                            ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                            ajaxvalidation +=  '    if ('+id+' == null){\n'
                             ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
                             ajaxvalidation +=  '    }\n'
 
@@ -239,7 +239,7 @@
 
                         ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
 
-                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '    if ('+id+' == null){\n'
                         ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
                         ajaxvalidation +=  '    }\n'
 
@@ -294,7 +294,7 @@
 
                         ajaxreader +=      '    var '+name+' = $("input[type=\'radio\'][name=\''+name+'\']:checked").val();\n'
 
-                        ajaxvalidation +=  '    if ('+name+' === null){\n'
+                        ajaxvalidation +=  '    if ('+name+' == null){\n'
                         ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
                         ajaxvalidation +=  '    }\n'
 
@@ -376,7 +376,7 @@
 
                         ajaxreader +=      '    var '+id+' = $("#'+id+'").val();\n'
 
-                        ajaxvalidation +=  '    if ('+id+' === ""){\n'
+                        ajaxvalidation +=  '    if ('+id+' == null){\n'
                         ajaxvalidation +=  '        errors += "'+label+' is a required field.<br>";\n'
                         ajaxvalidation +=  '    }\n'
 
